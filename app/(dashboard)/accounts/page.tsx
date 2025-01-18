@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CreateAccountDialog from "@/components/accounts/CreateAccountDialog";
 import AccountsList from "@/components/accounts/AccountsList";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AccountsPage() {
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -59,6 +60,28 @@ export default function AccountsPage() {
     }
   };
 
+  const handleUpdateAccount = async (
+    id: string,
+    data: { name: string; type: string; balance: number }
+  ) => {
+    try {
+      const updatedAccount = await api.updateAccount(id, data);
+      setAccounts((prev) =>
+        prev.map((account) => (account._id === id ? updatedAccount : account))
+      );
+      toast({
+        title: "Success",
+        description: "Account updated successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update account",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleDeleteAccount = async (id: string) => {
     try {
       await api.deleteAccount(id);
@@ -96,24 +119,57 @@ export default function AccountsPage() {
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Balance</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              ${totalBalance.toLocaleString()}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {isLoading ? (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 2 }).map((_, index) => (
+            <Card key={index}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Skeleton className="h-5 w-1/3" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-full" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Total Balance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                ${totalBalance.toLocaleString()}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
-      <AccountsList
-        accounts={accounts}
-        isLoading={isLoading}
-        onDelete={handleDeleteAccount}
-      />
+      {isLoading ? (
+        <div className="space-y-4">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="flex items-center space-x-4">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="space-y-2 flex-1">
+                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+              <Skeleton className="h-8 w-20" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <AccountsList
+          accounts={accounts}
+          isLoading={isLoading}
+          onDelete={handleDeleteAccount}
+          onUpdate={handleUpdateAccount}
+        />
+      )}
 
       <CreateAccountDialog
         open={isCreateDialogOpen}

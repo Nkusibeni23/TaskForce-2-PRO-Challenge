@@ -2,6 +2,7 @@
 
 import Sidebar from "@/components/SideBar";
 import TopBar from "@/components/TopBar";
+import { Toaster } from "@/components/ui/toaster";
 import React, { ReactNode, useState } from "react";
 
 function Layout({ children }: Readonly<{ children: ReactNode }>) {
@@ -13,6 +14,7 @@ function Layout({ children }: Readonly<{ children: ReactNode }>) {
 
   return (
     <div className="flex h-screen bg-background">
+      <Toaster />
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       <div
         className={`flex-1 transition-all duration-300 mt-16`}

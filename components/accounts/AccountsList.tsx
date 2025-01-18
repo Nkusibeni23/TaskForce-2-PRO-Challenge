@@ -1,8 +1,9 @@
 "use client";
 
-import { AccountsListProps } from "@/lib/types";
+import { useState } from "react";
+import { ExtendedAccountsListProps, Account } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -22,12 +23,33 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import UpdateAccountDialog from "./UpdateAccountDialog";
 
 export default function AccountsList({
   accounts,
   isLoading,
   onDelete,
-}: Readonly<AccountsListProps>) {
+  onUpdate,
+}: Readonly<ExtendedAccountsListProps>) {
+  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+
+  const handleUpdateClick = (account: Account) => {
+    setSelectedAccount(account);
+    setIsUpdateDialogOpen(true);
+  };
+
+  const handleUpdate = (data: {
+    name: string;
+    type: string;
+    balance: number;
+  }) => {
+    if (selectedAccount) {
+      onUpdate(selectedAccount._id, data);
+      setSelectedAccount(null);
+    }
+  };
+
   return (
     <div className="border rounded-lg">
       <Table>
@@ -66,7 +88,14 @@ export default function AccountsList({
                 <TableCell className="text-right">
                   ${account.balance.toLocaleString()}
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell className="text-right space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleUpdateClick(account)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="destructive" size="sm">
@@ -98,6 +127,15 @@ export default function AccountsList({
           )}
         </TableBody>
       </Table>
+
+      {selectedAccount && (
+        <UpdateAccountDialog
+          open={isUpdateDialogOpen}
+          onOpenChange={setIsUpdateDialogOpen}
+          onSubmit={handleUpdate}
+          account={selectedAccount}
+        />
+      )}
     </div>
   );
 }

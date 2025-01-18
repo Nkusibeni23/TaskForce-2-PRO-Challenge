@@ -128,14 +128,14 @@ export const useApi = () => {
       data: { name?: string; parentCategory?: string }
     ) => {
       const response = await apiWithAuth.put<Category>(
-        `/update-category/${id}`,
+        `/update-categories/${id}`,
         data
       );
       return response.data;
     },
 
     deleteCategory: async (id: string) => {
-      await apiWithAuth.delete(`/delete-category/${id}`);
+      await apiWithAuth.delete(`/delete-categories/${id}`);
     },
 
     // Reports

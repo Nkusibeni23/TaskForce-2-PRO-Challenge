@@ -23,11 +23,24 @@ export interface Transaction {
 
 export interface Category {
   _id: string;
+  userId: string;
   name: string;
   parentCategory?: string | Category;
-  userId: string;
+  type: "income" | "expense" | "both";
+  description?: string;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface CategoriesListProps {
+  categories: Category[];
+  isLoading: boolean;
+  onDelete: (id: string) => void;
+  onUpdate: (
+    id: string,
+    data: { name: string; parentCategory?: string }
+  ) => void;
 }
 
 export interface AccountsListProps {
@@ -36,8 +49,16 @@ export interface AccountsListProps {
   onDelete: (id: string) => void;
 }
 
-export interface CreateAccountDialogProps {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    onSubmit: (data: FormData) => void;
-  }
+export interface CreateCategoryDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (data: { name: string; parentCategory?: string }) => void;
+  categories: Category[];
+}
+
+export interface ExtendedAccountsListProps extends AccountsListProps {
+  onUpdate: (
+    id: string,
+    data: { name: string; type: string; balance: number }
+  ) => void;
+}
