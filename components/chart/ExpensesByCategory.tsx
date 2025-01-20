@@ -81,6 +81,7 @@ const ExpensesByCategory: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-2">
       <div className="max-w-lg mx-auto">
+        <h2 className="text-lg font-semibold mb-2">Expenses by Category</h2>
         <Bar
           data={chartData}
           options={{

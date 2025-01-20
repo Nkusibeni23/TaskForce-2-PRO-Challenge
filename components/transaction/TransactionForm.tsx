@@ -54,11 +54,12 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
   const fetchBudgets = async () => {
     try {
-      const data = await getBudgets();
-      setBudgets(data.data);
+      const response = await getBudgets();
+      setBudgets(response?.data || []);
     } catch (error) {
       console.error("Error fetching budgets", error);
       setError("Failed to load budgets.");
+      setBudgets([]);
     }
   };
 
@@ -69,6 +70,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     } catch (error) {
       console.error("Error fetching accounts", error);
       setError("Failed to load accounts.");
+      setAccounts([]);
     }
   };
 
@@ -86,7 +88,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       return;
     }
 
-    setError(null); // Clear any existing error
+    setError(null);
     onCreateTransaction(newTransaction);
 
     setNewTransaction({
@@ -180,6 +182,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
           </Select>
         </div>
         {/* Conditional budget field */}
+        {/* Conditional budget field */}
         {newTransaction.type === "expense" && (
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -195,7 +198,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
                 <SelectValue placeholder="Select a budget" />
               </SelectTrigger>
               <SelectContent>
-                {budgets.length > 0 ? (
+                {budgets?.length > 0 ? (
                   budgets.map((budget) => (
                     <SelectItem key={budget._id} value={budget._id}>
                       {budget.name}

@@ -54,6 +54,7 @@ const FinancialOverview: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-2">
       <div className="max-w-lg mx-auto">
+        <h2 className="text-lg font-semibold mb-2">Financial Overview</h2>
         <Pie data={chartData} />
       </div>
     </div>

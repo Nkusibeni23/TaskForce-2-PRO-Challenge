@@ -9,6 +9,7 @@ import {
   NewTransaction,
   ExpenseResponse,
   IncomeResponse,
+  BudgetResponse,
 } from "./types";
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
@@ -250,26 +251,26 @@ export const useApi = () => {
 
     // Recent Feed
     getRecentExpenses: async (limit = 10) => {
-      const response = await apiWithAuth.get<Transaction[]>("/get-expenses", {
+      const response = await apiWithAuth.get<ExpenseResponse>("/get-expenses", {
         params: { limit },
       });
       return response.data;
     },
 
     getRecentIncomes: async (limit = 10) => {
-      const response = await apiWithAuth.get<Transaction[]>("/get-incomes", {
+      const response = await apiWithAuth.get<IncomeResponse>("/get-incomes", {
         params: { limit },
       });
       return response.data;
     },
 
     getRecentBudgets: async (limit = 10) => {
-      const response = await apiWithAuth.get<Budget[]>("/get-budgets", {
+      const response = await apiWithAuth.get<BudgetResponse>("/get-budgets", {
         params: { limit },
       });
       return response.data;
     },
-
+    
     // Reports
     getTransactionReport: async (params: {
       startDate: string;

@@ -32,7 +32,7 @@ export default function AccountsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [api, toast]);
+  }, []);
 
   useEffect(() => {
     fetchAccounts();

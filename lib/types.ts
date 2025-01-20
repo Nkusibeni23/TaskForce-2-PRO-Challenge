@@ -171,3 +171,31 @@ export interface ChartData {
     backgroundColor: string;
   }[];
 }
+
+export interface PaginationResponse {
+  total: number;
+  pages: number;
+  currentPage: number;
+  perPage: number;
+}
+
+export interface ExpenseResponse {
+  message: string;
+  data: {
+    expenses: Transaction[];
+    pagination: PaginationResponse;
+  };
+}
+
+export interface IncomeResponse {
+  message: string;
+  data: {
+    incomes: Transaction[];
+    pagination: PaginationResponse;
+  };
+}
+
+export interface BudgetResponse {
+  message: string;
+  data: Budget[];
+}
