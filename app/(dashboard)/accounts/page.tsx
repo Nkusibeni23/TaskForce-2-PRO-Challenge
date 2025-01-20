@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useApi } from "@/lib/axios";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -18,12 +18,12 @@ export default function AccountsPage() {
   const api = useApi();
   const { toast } = useToast();
 
-  const fetchAccounts = async () => {
+  const fetchAccounts = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await api.getAccounts();
       setAccounts(data);
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to fetch accounts",
@@ -32,11 +32,11 @@ export default function AccountsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [api, toast]);
 
   useEffect(() => {
     fetchAccounts();
-  }, []);
+  }, [fetchAccounts]);
 
   const handleCreateAccount = async (data: {
     name: string;
@@ -51,7 +51,7 @@ export default function AccountsPage() {
         title: "Success",
         description: "Account created successfully",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create account",
@@ -73,7 +73,7 @@ export default function AccountsPage() {
         title: "Success",
         description: "Account updated successfully",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update account",
@@ -90,7 +90,7 @@ export default function AccountsPage() {
         title: "Success",
         description: "Account deleted successfully",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete account",
