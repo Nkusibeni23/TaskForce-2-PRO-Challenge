@@ -27,6 +27,14 @@ export default function BudgetPageContent() {
   const api = useApi();
   const { toast } = useToast();
 
+  type ApiError = {
+    response?: {
+      data?: {
+        message?: string;
+      };
+    };
+  };
+
   const fetchBudgets = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -34,8 +42,8 @@ export default function BudgetPageContent() {
       setBudgets(response.data);
     } catch (error: unknown) {
       const errorMessage =
-        (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message ?? "Failed to fetch budgets.";
+        (error as ApiError)?.response?.data?.message ??
+        "Failed to fetch budgets.";
       toast({
         title: "Error",
         description: errorMessage,
@@ -45,6 +53,10 @@ export default function BudgetPageContent() {
       setIsLoading(false);
     }
   }, [api, toast]);
+
+  useEffect(() => {
+    fetchBudgets();
+  }, [fetchBudgets]);
 
   useEffect(() => {
     fetchBudgets();
