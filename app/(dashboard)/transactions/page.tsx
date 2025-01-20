@@ -15,7 +15,7 @@ import TransactionForm from "@/components/transaction/TransactionForm";
 import TransactionList from "@/components/transaction/TransactionList";
 import { useToast } from "@/components/ui/use-toast";
 
-const TransactionPage: React.FC = () => {
+export default function TransactionPage() {
   const {
     getExpenses,
     deleteTransaction,
@@ -157,6 +157,4 @@ const TransactionPage: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default TransactionPage;
+}
