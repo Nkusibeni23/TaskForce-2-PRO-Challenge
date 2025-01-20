@@ -1,9 +1,6 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useApi } from "@/lib/axios";
 import {
   Account,
   Budget,
@@ -15,36 +12,18 @@ import TransactionForm from "@/components/transaction/TransactionForm";
 import TransactionList from "@/components/transaction/TransactionList";
 import { useToast } from "@/components/ui/use-toast";
 
-export default function TransactionPage() {
-  const {
-    getExpenses,
-    deleteTransaction,
-    createExpense,
-    createIncome,
-    getIncomes,
-    deleteIncome,
-    getCategories,
-    getBudgets,
-    getAccounts,
-  } = useApi();
-  const [expenses, setExpenses] = useState<Transaction[]>([]);
-  const [incomes, setIncomes] = useState<Transaction[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [budgets, setBudgets] = useState<Budget[]>([]);
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const { toast } = useToast();
+export async function getServerSideProps() {
+  try {
+    const {
+      getExpenses,
+      getIncomes,
+      getCategories,
+      getBudgets,
+      getAccounts,
+    } = require("@/lib/axios");
 
-  const fetchTransactions = async () => {
-    setLoading(true);
-    try {
-      const [
-        expenseData,
-        incomeData,
-        categoriesData,
-        budgetsData,
-        accountsData,
-      ] = await Promise.all([
+    const [expenseData, incomeData, categoriesData, budgetsData, accountsData] =
+      await Promise.all([
         getExpenses({ page: 1, limit: 10 }),
         getIncomes({ page: 1, limit: 10 }),
         getCategories(),
@@ -52,24 +31,48 @@ export default function TransactionPage() {
         getAccounts(),
       ]);
 
-      setExpenses(expenseData.data.expenses);
-      setIncomes(incomeData.data.incomes);
-      setCategories(categoriesData);
-      setBudgets(budgetsData.data);
-      setAccounts(accountsData);
-    } catch (err) {
-      console.error("Error fetching data", err);
-      toast({
-        variant: "destructive",
-        title: "Error fetching data",
-        description: "An error occurred while fetching data. Please try again.",
-      });
-    }
-    setLoading(false);
-  };
+    return {
+      props: {
+        expenses: expenseData.data.expenses,
+        incomes: incomeData.data.incomes,
+        categories: categoriesData,
+        budgets: budgetsData.data,
+        accounts: accountsData,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return {
+      props: {
+        expenses: [],
+        incomes: [],
+        categories: [],
+        budgets: [],
+        accounts: [],
+      },
+    };
+  }
+}
+
+export default function TransactionPage({
+  expenses,
+  incomes,
+  categories,
+  budgets,
+  accounts,
+}: {
+  expenses: Transaction[];
+  incomes: Transaction[];
+  categories: Category[];
+  budgets: Budget[];
+  accounts: Account[];
+}) {
+  const { toast } = useToast();
 
   const handleCreateTransaction = async (newTransaction: NewTransaction) => {
     try {
+      const { createExpense, createIncome } = require("@/lib/axios");
+
       if (newTransaction.type === "expense") {
         await createExpense(newTransaction);
         toast({
@@ -83,7 +86,6 @@ export default function TransactionPage() {
           description: "Your income has been successfully added.",
         });
       }
-      fetchTransactions();
     } catch (error) {
       console.error("Error creating transaction", error);
       toast({
@@ -98,12 +100,14 @@ export default function TransactionPage() {
     type: "income" | "expense"
   ) => {
     try {
+      const { deleteTransaction, deleteIncome } = require("@/lib/axios");
+
       if (type === "expense") {
         await deleteTransaction(id);
       } else {
         await deleteIncome(id);
       }
-      fetchTransactions();
+
       toast({
         title: "Transaction deleted",
         description: "The transaction has been successfully deleted.",
@@ -119,10 +123,6 @@ export default function TransactionPage() {
     }
   };
 
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
-
   return (
     <div className="p-4">
       <h1 className="text-xl font-semibold mb-4">Transactions</h1>
@@ -131,27 +131,27 @@ export default function TransactionPage() {
       </Card>
       <div className="mt-6">
         <h2 className="text-lg font-semibold">Expense History</h2>
-        {loading ? (
+        {expenses.length === 0 ? (
           <Skeleton className="h-24 w-full rounded-md mb-4" />
         ) : (
           <TransactionList
             transactions={expenses}
             categories={categories}
             budgets={budgets}
-            onDeleteTransaction={handleDeleteTransaction}
+            onDeleteTransaction={(id) => handleDeleteTransaction(id, "expense")}
           />
         )}
       </div>
       <div className="mt-6">
         <h2 className="text-lg font-semibold">Income History</h2>
-        {loading ? (
+        {incomes.length === 0 ? (
           <Skeleton className="h-24 w-full rounded-md mb-4" />
         ) : (
           <TransactionList
             transactions={incomes}
             categories={categories}
             accounts={accounts}
-            onDeleteTransaction={handleDeleteTransaction}
+            onDeleteTransaction={(id) => handleDeleteTransaction(id, "income")}
           />
         )}
       </div>
