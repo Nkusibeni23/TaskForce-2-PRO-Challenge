@@ -1,75 +1,43 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Account,
-  Budget,
-  Category,
-  NewTransaction,
-  Transaction,
-} from "@/lib/types";
 import TransactionForm from "@/components/transaction/TransactionForm";
 import TransactionList from "@/components/transaction/TransactionList";
 import { useToast } from "@/components/ui/use-toast";
 
-export async function getServerSideProps() {
-  try {
-    const {
-      getExpenses,
-      getIncomes,
-      getCategories,
-      getBudgets,
-      getAccounts,
-    } = require("@/lib/axios");
+async function fetchData() {
+  const {
+    getExpenses,
+    getIncomes,
+    getCategories,
+    getBudgets,
+    getAccounts,
+  } = require("@/lib/axios");
 
-    const [expenseData, incomeData, categoriesData, budgetsData, accountsData] =
-      await Promise.all([
-        getExpenses({ page: 1, limit: 10 }),
-        getIncomes({ page: 1, limit: 10 }),
-        getCategories(),
-        getBudgets(),
-        getAccounts(),
-      ]);
+  const [expenseData, incomeData, categoriesData, budgetsData, accountsData] =
+    await Promise.all([
+      getExpenses({ page: 1, limit: 10 }),
+      getIncomes({ page: 1, limit: 10 }),
+      getCategories(),
+      getBudgets(),
+      getAccounts(),
+    ]);
 
-    return {
-      props: {
-        expenses: expenseData.data.expenses,
-        incomes: incomeData.data.incomes,
-        categories: categoriesData,
-        budgets: budgetsData.data,
-        accounts: accountsData,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return {
-      props: {
-        expenses: [],
-        incomes: [],
-        categories: [],
-        budgets: [],
-        accounts: [],
-      },
-    };
-  }
+  return {
+    expenses: expenseData.data.expenses,
+    incomes: incomeData.data.incomes,
+    categories: categoriesData,
+    budgets: budgetsData.data,
+    accounts: accountsData,
+  };
 }
 
-export default function TransactionPage({
-  expenses,
-  incomes,
-  categories,
-  budgets,
-  accounts,
-}: {
-  expenses: Transaction[];
-  incomes: Transaction[];
-  categories: Category[];
-  budgets: Budget[];
-  accounts: Account[];
-}) {
+export default async function TransactionPage() {
+  const { expenses, incomes, categories, budgets, accounts } =
+    await fetchData();
   const { toast } = useToast();
 
-  const handleCreateTransaction = async (newTransaction: NewTransaction) => {
+  const handleCreateTransaction = async (newTransaction: any) => {
     try {
       const { createExpense, createIncome } = require("@/lib/axios");
 
