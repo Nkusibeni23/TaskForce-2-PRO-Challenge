@@ -18,13 +18,12 @@ export default function AccountsPage() {
   const api = useApi();
   const { toast } = useToast();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchAccounts = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await api.getAccounts();
       setAccounts(data);
-    } catch {
+    } catch (error) {
       toast({
         title: "Error",
         description: "Failed to fetch accounts",
@@ -33,7 +32,7 @@ export default function AccountsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [api, toast]);
 
   useEffect(() => {
     fetchAccounts();
