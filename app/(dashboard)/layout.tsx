@@ -14,7 +14,6 @@ function Layout({ children }: Readonly<{ children: ReactNode }>) {
 
   return (
     <div className="flex h-screen bg-background">
-      <Toaster />
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       <div
         className={`flex-1 transition-all duration-300 mt-16`}
@@ -25,6 +24,7 @@ function Layout({ children }: Readonly<{ children: ReactNode }>) {
         <TopBar isOpen={sidebarOpen} />
         <main className="p-8 mt-4">{children}</main>
       </div>
+      <Toaster />
     </div>
   );
 }

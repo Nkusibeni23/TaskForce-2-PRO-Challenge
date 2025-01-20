@@ -12,7 +12,6 @@ interface Activity {
 
 const ActivityFeed: React.FC = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const { getRecentExpenses, getRecentIncomes, getRecentBudgets } = useApi();
 
@@ -49,9 +48,7 @@ const ActivityFeed: React.FC = () => {
         ];
 
         setActivities(allActivities.slice(0, 10));
-        setError(null);
-      } catch (error) {
-        setError("Failed to fetch recent activities.");
+      } catch {
         setActivities([]);
       } finally {
         setLoading(false);
@@ -59,14 +56,13 @@ const ActivityFeed: React.FC = () => {
     };
 
     fetchRecentActivities();
-  }, []);
+  }, [getRecentExpenses, getRecentIncomes, getRecentBudgets]);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-lg font-semibold mb-4 text-gray-700">
         Recent Activity
       </h2>
-      {error && <div className="text-red-500 mb-4">{error}</div>}
       {loading ? (
         <ul className="space-y-4">
           {Array.from({ length: 5 }).map((_, index) => (

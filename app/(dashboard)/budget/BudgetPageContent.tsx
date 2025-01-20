@@ -144,9 +144,6 @@ export default function BudgetPageContent() {
           budgets={budgets}
           onDelete={openConfirmationDialog}
           isLoading={isLoading}
-          onUpdate={function (budget: Budget): void {
-            throw new Error("Function not implemented.");
-          }}
         />
       )}
 

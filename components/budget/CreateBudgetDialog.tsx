@@ -29,6 +29,7 @@ import {
 import { useApi } from "@/lib/axios";
 import { Category } from "@/lib/types";
 import { useToast } from "@/components/ui/use-toast";
+import CustomLoader from "../shared/CustomLoader";
 
 const formSchema = z
   .object({
@@ -107,7 +108,7 @@ export default function CreateBudgetDialog({
 
         setAccounts(accountsData.map(({ _id, name }) => ({ id: _id, name })));
         setCategories(categoriesData);
-      } catch (error) {
+      } catch {
         toast({
           title: "Error",
           description: "Failed to load accounts and categories.",
@@ -220,38 +221,51 @@ export default function CreateBudgetDialog({
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-4"
           >
-            {renderField("name", "Budget Name", "Enter budget name")}
-            {renderField("amount", "Amount", "Enter budget amount", "number")}
-            {renderSelectField(
-              "account",
-              "Account",
-              accounts.map((account) => ({
-                value: account.id,
-                label: account.name,
-              })),
-              "Select an account"
-            )}
+            {isLoading ? (
+              <div className="flex justify-center items-center">
+                <CustomLoader />
+              </div>
+            ) : (
+              <>
+                {renderField("name", "Budget Name", "Enter budget name")}
+                {renderField(
+                  "amount",
+                  "Amount",
+                  "Enter budget amount",
+                  "number"
+                )}
+                {renderSelectField(
+                  "account",
+                  "Account",
+                  accounts.map((account) => ({
+                    value: account.id,
+                    label: account.name,
+                  })),
+                  "Select an account"
+                )}
 
-            {renderSelectField(
-              "category",
-              "Category",
-              categories.map((category) => ({
-                value: category._id,
-                label: category.name,
-              })),
-              "Select a category"
-            )}
+                {renderSelectField(
+                  "category",
+                  "Category",
+                  categories.map((category) => ({
+                    value: category._id,
+                    label: category.name,
+                  })),
+                  "Select a category"
+                )}
 
-            {renderField("startDate", "Start Date", undefined, "date")}
-            {renderField("endDate", "End Date", undefined, "date")}
-            {renderField(
-              "description",
-              "Description",
-              "Enter description (if any)",
-              "text",
-              true
+                {renderField("startDate", "Start Date", undefined, "date")}
+                {renderField("endDate", "End Date", undefined, "date")}
+                {renderField(
+                  "description",
+                  "Description",
+                  "Enter description (if any)",
+                  "text",
+                  true
+                )}
+                {renderField("limit", "Limit", "Enter budget limit", "number")}
+              </>
             )}
-            {renderField("limit", "Limit", "Enter budget limit", "number")}
             <DialogFooter>
               <Button type="submit">Create</Button>
             </DialogFooter>

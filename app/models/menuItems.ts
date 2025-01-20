@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 export interface MenuItem {
-  icon: React.ComponentType<any>;
+  icon: React.FC<React.SVGProps<SVGSVGElement>>;
   text: string;
   category: string;
   path: string;

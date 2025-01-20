@@ -1,6 +1,6 @@
 import { Budget, PopulatedAccount, PopulatedCategory } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -8,7 +8,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface BudgetListProps {
   budgets: Budget[];
   onDelete: (id: string) => void;
-  onUpdate: (budget: Budget) => void;
   isLoading: boolean;
 }
 
@@ -42,7 +41,6 @@ function BudgetSkeleton() {
 export default function BudgetList({
   budgets,
   onDelete,
-  onUpdate,
   isLoading,
 }: BudgetListProps) {
   if (isLoading) {
@@ -104,16 +102,6 @@ export default function BudgetList({
           className="relative flex flex-col p-6 bg-muted rounded-xl"
         >
           <div className="absolute top-4 right-4 flex gap-2">
-            {/* <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onUpdate(budget)}
-              aria-label={`Edit ${budget.name || "budget"}`}
-              className="flex items-center gap-1 "
-            >
-              <Pencil className="h-4 w-4" />
-              Edit
-            </Button> */}
             <Button
               variant="destructive"
               size="sm"
