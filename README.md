@@ -15,12 +15,12 @@ The app is deployed on Netlify: [TaskForce 2 PRO](https://task-force-pro.netlify
 
 ## Features
 
-- **Authentication:** Powered by [Clerk](https://clerk.dev) for user authentication and session management.
-- **Reusable Components:** Built with [shadcn/ui](https://github.com/shadcn/ui) for consistency and maintainability.
-- **Data Visualization:** Includes interactive charts using [Chart.js](https://www.chartjs.org/) and [react-chartjs-2](https://react-chartjs-2.js.org/).
-- **Responsive Design:** Fully responsive design built with [Tailwind CSS](https://tailwindcss.com).
-- **Type Safety:** TypeScript ensures safer and more reliable code.
-- **API Integration:** Leverages [Axios](https://axios-http.com/) for seamless HTTP requests.
+- **Authentication**: Powered by [Clerk](https://clerk.dev) for user authentication and session management.
+- **Reusable Components**: Built with [shadcn/ui](https://github.com/shadcn/ui) for consistency and maintainability.
+- **Data Visualization**: Includes interactive charts using [Chart.js](https://www.chartjs.org/) and [react-chartjs-2](https://react-chartjs-2.js.org/).
+- **Responsive Design**: Fully responsive design built with [Tailwind CSS](https://tailwindcss.com).
+- **Type Safety**: TypeScript ensures safer and more reliable code.
+- **API Integration**: Leverages [Axios](https://axios-http.com/) for seamless HTTP requests.
 
 ---
 
@@ -35,35 +35,19 @@ Ensure you have the following installed:
 
 ### Installation
 
-Clone the repository and install dependencies:
+Clone the repositories and install dependencies:
 
 ```bash
 # Clone the frontend repository
 git clone https://github.com/Nkusibeni23/TaskForce-2-PRO-Challenge.git
 cd TaskForce-2-PRO-Challenge
 
-# Install dependencies
+# Clone the server repository
+git clone https://github.com/Nkusibeni23/TaskForce-2-Pro-Server.git
+cd TaskForce-2-Pro-Server
+
+# Install dependencies for both frontend and server
 yarn install
 # or
 npm install
 ```
-
-# Start the server
-
-yarn dev
-
-# or
-
-npm run dev
-
-yarn build
-
-# or
-
-npm run build
-
-yarn start
-
-# or
-
-npm start
