@@ -1,6 +1,15 @@
 import axios from "axios";
 import { useAuth } from "@clerk/nextjs";
-import type { Account, Transaction, Category } from "./types";
+import {
+  type Account,
+  type Transaction,
+  type Category,
+  type Budget,
+  Expense,
+  NewTransaction,
+  ExpenseResponse,
+  IncomeResponse,
+} from "./types";
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -114,7 +123,12 @@ export const useApi = () => {
     },
 
     getCategories: async () => {
-      const response = await apiWithAuth.get<Category[]>("/get-categories");
+      const response = await apiWithAuth.get<Category[]>("/get-categories", {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+          "clerk-token": await getToken(),
+        },
+      });
       return response.data;
     },
 
@@ -138,6 +152,124 @@ export const useApi = () => {
       await apiWithAuth.delete(`/delete-categories/${id}`);
     },
 
+    // budget
+    createBudget: async (data: {
+      name: string;
+      amount: number;
+      account: string;
+      category?: string;
+      description?: string;
+      limit: number;
+      startDate: string;
+      endDate: string;
+    }) => {
+      const response = await apiWithAuth.post("/add-budget", data);
+      return response.data;
+    },
+
+    getBudgets: async () => {
+      const response = await apiWithAuth.get<{
+        message: string;
+        data: Budget[];
+      }>("/get-budgets");
+      return response.data;
+    },
+
+    getAllBudgets: async () => {
+      const response = await apiWithAuth.get("/get-all-budgets");
+      return response.data;
+    },
+
+    updateBudget: async (id: string, data: Partial<Budget>) => {
+      const response = await apiWithAuth.put(`/update-budget/${id}`, data);
+      return response.data;
+    },
+
+    deleteBudget: async (id: string) => {
+      const response = await apiWithAuth.delete(`/delete-budget/${id}`);
+      return response.data;
+    },
+
+    updateBudgetSpending: async (budgetId: string, amount: number) => {
+      const response = await apiWithAuth.post(`/budgets/${budgetId}/spending`, {
+        amount,
+      });
+      return response.data;
+    },
+
+    checkExpiredBudgets: async () => {
+      const response = await apiWithAuth.post("/budgets/check-expired");
+      return response.data;
+    },
+
+    // Expenses
+    createExpense: async (data: NewTransaction) => {
+      const response = await apiWithAuth.post<Expense>("/add-expense", data);
+      return response.data;
+    },
+
+    getExpenses: async (params?: {
+      startDate?: string;
+      endDate?: string;
+      category?: string;
+      page?: number;
+      limit?: number;
+    }) => {
+      const response = await apiWithAuth.get<ExpenseResponse>("/get-expenses", {
+        params,
+      });
+      return response.data;
+    },
+
+    deleteExpense: async (id: string) => {
+      await apiWithAuth.delete(`/delete-expense/${id}`);
+    },
+
+    // Incomes
+    createIncome: async (data: NewTransaction) => {
+      const response = await apiWithAuth.post<Transaction>("/add-income", data);
+      return response.data;
+    },
+
+    getIncomes: async (params?: {
+      startDate?: string;
+      endDate?: string;
+      category?: string;
+      page?: number;
+      limit?: number;
+    }) => {
+      const response = await apiWithAuth.get<IncomeResponse>("/get-incomes", {
+        params,
+      });
+      return response.data;
+    },
+
+    deleteIncome: async (id: string) => {
+      await apiWithAuth.delete(`/delete-income/${id}`);
+    },
+
+    // Recent Feed
+    getRecentExpenses: async (limit = 10) => {
+      const response = await apiWithAuth.get<Transaction[]>("/get-expenses", {
+        params: { limit },
+      });
+      return response.data;
+    },
+
+    getRecentIncomes: async (limit = 10) => {
+      const response = await apiWithAuth.get<Transaction[]>("/get-incomes", {
+        params: { limit },
+      });
+      return response.data;
+    },
+
+    getRecentBudgets: async (limit = 10) => {
+      const response = await apiWithAuth.get<Budget[]>("/get-budgets", {
+        params: { limit },
+      });
+      return response.data;
+    },
+
     // Reports
     getTransactionReport: async (params: {
       startDate: string;
@@ -148,30 +280,6 @@ export const useApi = () => {
       const response = await apiWithAuth.get("/reports/transactions", {
         params,
       });
-      return response.data;
-    },
-
-    // Income specific
-    getIncomes: async (params?: {
-      startDate?: string;
-      endDate?: string;
-      category?: string;
-      page?: number;
-      limit?: number;
-    }) => {
-      const response = await apiWithAuth.get("/get-incomes", { params });
-      return response.data;
-    },
-
-    // Expense specific
-    getExpenses: async (params?: {
-      startDate?: string;
-      endDate?: string;
-      category?: string;
-      page?: number;
-      limit?: number;
-    }) => {
-      const response = await apiWithAuth.get("/get-expenses", { params });
       return response.data;
     },
   };

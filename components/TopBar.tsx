@@ -3,6 +3,7 @@
 import { UserButton, useUser } from "@clerk/nextjs";
 import React from "react";
 import { ThemeSwitchButton } from "./ThemeSwitchButton";
+import { Bell } from "lucide-react"; // Import the notification bell icon
 
 const TopBar: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
   const { user } = useUser();
@@ -26,7 +27,14 @@ const TopBar: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
         </div>
       </div>
       <div className="flex items-center mr-10 cursor-pointer gap-4">
+        <button className="p-2 rounded-full hover:bg-muted transition-all">
+          <Bell className="h-5 w-5 text-muted-foreground" />
+        </button>
+
+        {/* Theme Switch Button */}
         <ThemeSwitchButton />
+
+        {/* User Button */}
         <UserButton afterSignOutUrl="/sign-in" />
       </div>
     </div>

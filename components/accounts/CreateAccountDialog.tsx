@@ -30,7 +30,9 @@ import {
 const accountTypes = [
   { label: "Cash", value: "cash" },
   { label: "Bank Account", value: "bank" },
+  { label: "MoMo", value: "momo" },
   { label: "Credit Card", value: "credit" },
+  { label: "Debit Card", value: "debit" },
   { label: "Investment", value: "investment" },
   { label: "Other", value: "other" },
 ] as const;

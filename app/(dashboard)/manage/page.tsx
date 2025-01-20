@@ -104,9 +104,7 @@ export default function CategoryPage() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Categories</h2>
-          <p className="text-muted-foreground">
-            Manage your categories for income and expenses
-          </p>
+          <p className="text-muted-foreground">Manage your categories.</p>
         </div>
         <Button onClick={() => setIsCreateDialogOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />

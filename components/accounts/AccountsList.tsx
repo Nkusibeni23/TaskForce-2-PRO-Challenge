@@ -55,7 +55,7 @@ export default function AccountsList({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
+            <TableHead>Account Name</TableHead>
             <TableHead>Type</TableHead>
             <TableHead className="text-right">Balance</TableHead>
             <TableHead className="text-right">Actions</TableHead>
