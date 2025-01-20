@@ -8,7 +8,8 @@ TaskForce 2 PRO Challenge is built with a focus on **server-side rendering (SSR)
 
 ### Live Demo
 
-The app is deployed on Netlify: [TaskForce 2 PRO](https://task-force-pro.netlify.app/)  
+The app is deployed on Netlify: [TaskForce 2 PRO](https://task-force-pro.netlify.app/)
+GitHub Repo: [TaskForce Pro 2.0](https://github.com/Nkusibeni23/TaskForce-2-Pro-Server.git/)
 (Note: Currently facing an internal server error 500. We are actively working on resolving the issue.)
 
 ---
