@@ -55,7 +55,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
           <p className="text-sm text-gray-500">
             Date: {new Date(transaction.date).toLocaleDateString()}
           </p>
-          <p className="text-sm text-gray-500 font-medium">Category: {categoryName}</p>
+          <p className="text-sm text-gray-500 font-medium">
+            Category: {categoryName}
+          </p>
           {transaction.description && (
             <p className="text-sm text-gray-400 mt-1">
               {transaction.description}

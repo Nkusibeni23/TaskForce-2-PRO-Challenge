@@ -1,40 +1,26 @@
-import React from "react";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+"use client";
+
+import { useToast } from "@/components/ui/use-toast";
 import TransactionForm from "@/components/transaction/TransactionForm";
 import TransactionList from "@/components/transaction/TransactionList";
-import { useToast } from "@/components/ui/use-toast";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
-async function fetchData() {
-  const {
-    getExpenses,
-    getIncomes,
-    getCategories,
-    getBudgets,
-    getAccounts,
-  } = require("@/lib/axios");
-
-  const [expenseData, incomeData, categoriesData, budgetsData, accountsData] =
-    await Promise.all([
-      getExpenses({ page: 1, limit: 10 }),
-      getIncomes({ page: 1, limit: 10 }),
-      getCategories(),
-      getBudgets(),
-      getAccounts(),
-    ]);
-
-  return {
-    expenses: expenseData.data.expenses,
-    incomes: incomeData.data.incomes,
-    categories: categoriesData,
-    budgets: budgetsData.data,
-    accounts: accountsData,
-  };
+interface TransactionPageClientProps {
+  expenses: any[];
+  incomes: any[];
+  categories: any[];
+  budgets: any[];
+  accounts: any[];
 }
 
-export default async function TransactionPage() {
-  const { expenses, incomes, categories, budgets, accounts } =
-    await fetchData();
+export default function TransactionPageClient({
+  expenses,
+  incomes,
+  categories,
+  budgets,
+  accounts,
+}: TransactionPageClientProps) {
   const { toast } = useToast();
 
   const handleCreateTransaction = async (newTransaction: any) => {
