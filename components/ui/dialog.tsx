@@ -15,9 +15,13 @@ const DialogPortal = ({
 }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Portal> & {
   className?: string;
 }) => (
-  // eslint-disable-next-line react/jsx-key
-  <DialogPrimitive.Portal className={cn(className)} {...props}>
-    <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center">
+  <DialogPrimitive.Portal {...props}>
+    <div
+      className={cn(
+        "fixed inset-0 z-50 flex items-start justify-center sm:items-center",
+        className
+      )}
+    >
       {children}
     </div>
   </DialogPrimitive.Portal>
