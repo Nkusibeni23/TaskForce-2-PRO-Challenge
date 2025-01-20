@@ -52,8 +52,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
                   }`}
                   onClick={() => handleItemClick(item)}
                 >
-                  <item.icon size={24} />
-                  {isOpen && <span className="ml-4">{item.text}</span>}
+                  <button onClick={toggleSidebar} className=" text-foreground">
+                    {isOpen ? (
+                      <ChevronLeft width={24} height={24} />
+                    ) : (
+                      <ChevronRight width={24} height={24} />
+                    )}
+                  </button>
                 </a>
               ))}
           </div>

@@ -3,7 +3,7 @@
 import { UserButton, useUser } from "@clerk/nextjs";
 import React from "react";
 import { ThemeSwitchButton } from "./ThemeSwitchButton";
-import { Bell } from "lucide-react"; // Import the notification bell icon
+import { Bell } from "lucide-react";
 
 const TopBar: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
   const { user } = useUser();
