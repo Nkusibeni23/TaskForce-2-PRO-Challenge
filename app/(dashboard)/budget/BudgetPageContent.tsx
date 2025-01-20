@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useApi } from "@/lib/axios";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -15,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function BudgetPageContent() {
   const [budgets, setBudgets] = useState<Budget[]>([]);
@@ -26,26 +27,28 @@ export default function BudgetPageContent() {
   const api = useApi();
   const { toast } = useToast();
 
-  const fetchBudgets = async () => {
+  const fetchBudgets = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await api.getBudgets();
       setBudgets(response.data);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message ?? "Failed to fetch budgets.";
       toast({
         title: "Error",
-        description:
-          error.response?.data?.message || "Failed to fetch budgets.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [api, toast]);
 
   useEffect(() => {
     fetchBudgets();
-  }, []);
+  }, [fetchBudgets]);
 
   const handleCreateBudget = async (formData: BudgetFormData) => {
     try {
@@ -58,51 +61,13 @@ export default function BudgetPageContent() {
           description: "Budget created successfully.",
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message ?? "Failed to create budget.";
       toast({
         title: "Error",
-        description:
-          error.response?.data?.message || "Failed to create budget.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleUpdateBudget = async (budget: Budget) => {
-    try {
-      const updateData = {
-        name: budget.name,
-        amount: budget.amount,
-        description: budget.description,
-        limit: budget.limit,
-        startDate: budget.startDate,
-        endDate: budget.endDate,
-        account:
-          typeof budget.account === "string"
-            ? budget.account
-            : budget.account._id,
-        category: budget.category
-          ? typeof budget.category === "string"
-            ? budget.category
-            : budget.category._id
-          : undefined,
-      };
-
-      const response = await api.updateBudget(budget._id, updateData);
-      if (response?.data) {
-        setBudgets((prev) =>
-          prev.map((b) => (b._id === budget._id ? response.data : b))
-        );
-        toast({
-          title: "Success",
-          description: "Budget updated successfully.",
-        });
-      }
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description:
-          error.response?.data?.message || "Failed to update budget.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -121,11 +86,13 @@ export default function BudgetPageContent() {
         description: "Budget deleted successfully.",
       });
       setIsConfirmationDialogOpen(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message ?? "Failed to delete budget.";
       toast({
         title: "Error",
-        description:
-          error.response?.data?.message || "Failed to delete budget.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -151,12 +118,26 @@ export default function BudgetPageContent() {
         </Button>
       </div>
 
-      <BudgetList
-        budgets={budgets}
-        onDelete={openConfirmationDialog}
-        onUpdate={handleUpdateBudget}
-        isLoading={isLoading}
-      />
+      {isLoading ? (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div key={index}>
+              <Skeleton className="h-6 w-2/3 mb-2" />
+              <Skeleton className="h-4 w-full" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <BudgetList
+          budgets={budgets}
+          onDelete={openConfirmationDialog}
+          isLoading={isLoading}
+          onUpdate={function (budget: Budget): void {
+            throw new Error("Function not implemented.");
+          }}
+        />
+      )}
+
       {/* Confirmation Dialog */}
       <Dialog
         open={isConfirmationDialogOpen}
@@ -167,8 +148,8 @@ export default function BudgetPageContent() {
             <DialogTitle>Confirm Deletion</DialogTitle>
           </DialogHeader>
           <p className="py-4">
-            Are you sure you want to delete this budget? This action will remove
-            the budget and return the remaining amount to the account.
+            Are you sure you want to delete this budget? This action cannot be
+            undone.
           </p>
           <DialogFooter>
             <Button
