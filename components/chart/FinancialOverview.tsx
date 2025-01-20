@@ -49,7 +49,7 @@ const FinancialOverview: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [chartData, getExpenses, getIncomes]);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-2">

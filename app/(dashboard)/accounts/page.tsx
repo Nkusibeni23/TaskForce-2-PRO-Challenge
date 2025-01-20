@@ -23,7 +23,7 @@ export default function AccountsPage() {
       setIsLoading(true);
       const data = await api.getAccounts();
       setAccounts(data);
-    } catch (error) {
+    } catch (_) {
       toast({
         title: "Error",
         description: "Failed to fetch accounts",

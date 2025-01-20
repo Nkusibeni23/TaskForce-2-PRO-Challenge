@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -36,43 +36,43 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     account: "",
   });
 
+  const fetchCategories = useCallback(async () => {
+    try {
+      const data = await getCategories();
+      setCategories(data);
+    } catch (_) {
+      console.error("Error fetching categories");
+      setError("Failed to load categories.");
+    }
+  }, [getCategories]);
+
+  const fetchBudgets = useCallback(async () => {
+    try {
+      const response = await getBudgets();
+      setBudgets(response?.data || []);
+    } catch (_) {
+      console.error("Error fetching budgets");
+      setError("Failed to load budgets.");
+      setBudgets([]);
+    }
+  }, [getBudgets]);
+
+  const fetchAccounts = useCallback(async () => {
+    try {
+      const data = await getAccounts();
+      setAccounts(data);
+    } catch (_) {
+      console.error("Error fetching accounts");
+      setError("Failed to load accounts.");
+      setAccounts([]);
+    }
+  }, [getAccounts]);
+
   useEffect(() => {
     fetchCategories();
     fetchBudgets();
     fetchAccounts();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const data = await getCategories();
-      setCategories(data);
-    } catch (error) {
-      console.error("Error fetching categories", error);
-      setError("Failed to load categories.");
-    }
-  };
-
-  const fetchBudgets = async () => {
-    try {
-      const response = await getBudgets();
-      setBudgets(response?.data || []);
-    } catch (error) {
-      console.error("Error fetching budgets", error);
-      setError("Failed to load budgets.");
-      setBudgets([]);
-    }
-  };
-
-  const fetchAccounts = async () => {
-    try {
-      const data = await getAccounts();
-      setAccounts(data);
-    } catch (error) {
-      console.error("Error fetching accounts", error);
-      setError("Failed to load accounts.");
-      setAccounts([]);
-    }
-  };
+  }, [fetchCategories, fetchBudgets, fetchAccounts]);
 
   const handleSubmit = () => {
     if (!newTransaction.category) {
@@ -181,7 +181,6 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             </SelectContent>
           </Select>
         </div>
-        {/* Conditional budget field */}
         {/* Conditional budget field */}
         {newTransaction.type === "expense" && (
           <div>
