@@ -14,7 +14,7 @@ function DashboardPage() {
           <ActivityFeed />
         </div>
       </div>
-    </div>
+    </div> 
   );
 }
 

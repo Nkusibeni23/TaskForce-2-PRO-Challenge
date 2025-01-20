@@ -1,11 +1,12 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
-import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useApi } from "@/lib/axios";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+const Pie = dynamic(() => import("react-chartjs-2").then((mod) => mod.Pie), {
+  ssr: false,
+});
 
 const FinancialOverview: React.FC = () => {
   const [chartData, setChartData] = useState({
@@ -22,34 +23,35 @@ const FinancialOverview: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const incomesResponse = await getIncomes();
-      const expensesResponse = await getExpenses();
+      try {
+        const incomesResponse = await getIncomes();
+        const expensesResponse = await getExpenses();
 
-      const incomes = incomesResponse.data.incomes;
-      const expenses = expensesResponse.data.expenses;
+        const totalIncome = incomesResponse.data.incomes.reduce(
+          (sum, income) => sum + income.amount,
+          0
+        );
+        const totalExpenses = expensesResponse.data.expenses.reduce(
+          (sum, expense) => sum + expense.amount,
+          0
+        );
 
-      const totalIncome = incomes.reduce(
-        (sum, income) => sum + income.amount,
-        0
-      );
-      const totalExpenses = expenses.reduce(
-        (sum, expense) => sum + expense.amount,
-        0
-      );
-
-      setChartData({
-        ...chartData,
-        datasets: [
-          {
-            ...chartData.datasets[0],
-            data: [totalIncome, totalExpenses],
-          },
-        ],
-      });
+        setChartData((prev) => ({
+          ...prev,
+          datasets: [
+            {
+              ...prev.datasets[0],
+              data: [totalIncome, totalExpenses],
+            },
+          ],
+        }));
+      } catch (err) {
+        console.error("Error fetching financial data:", err);
+      }
     };
 
     fetchData();
-  }, [chartData, getExpenses, getIncomes]);
+  }, [getIncomes, getExpenses]);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-2">
