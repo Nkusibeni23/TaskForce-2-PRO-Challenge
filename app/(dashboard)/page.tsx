@@ -1,4 +1,3 @@
-import ExpensesByCategory from "@/components/chart/ExpensesByCategory";
 import FinancialOverview from "@/components/chart/FinancialOverview";
 import ActivityFeed from "@/components/feed/ActivityFeed";
 import React from "react";
@@ -10,9 +9,6 @@ function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div>
           <FinancialOverview />
-        </div>
-        <div>
-          <ExpensesByCategory />
         </div>
         <div>
           <ActivityFeed />
