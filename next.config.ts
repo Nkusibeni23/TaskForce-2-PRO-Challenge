@@ -8,8 +8,15 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  async redirects() {
-    return [];
+  async rewrites() {
+    return {
+      fallback: [
+        {
+          source: "/:path*",
+          destination: "/[...not_found]",
+        },
+      ],
+    };
   },
 };
 

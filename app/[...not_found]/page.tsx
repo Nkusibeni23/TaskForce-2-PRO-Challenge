@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-export default function NotFound() {
+export default function CatchAll() {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100 text-center">
       <div className="max-w-lg p-6 bg-white rounded-lg shadow-lg">
