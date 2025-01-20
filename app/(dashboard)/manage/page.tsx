@@ -22,7 +22,7 @@ export default function CategoryPage() {
       setIsLoading(true);
       const data = await api.getCategories();
       setCategories(data);
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to fetch categories",
@@ -49,7 +49,7 @@ export default function CategoryPage() {
         title: "Success",
         description: "Category created successfully",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create category",
@@ -73,7 +73,7 @@ export default function CategoryPage() {
         title: "Success",
         description: "Category updated successfully",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update category",
@@ -90,7 +90,7 @@ export default function CategoryPage() {
         title: "Success",
         description: "Category deleted successfully",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete category",
